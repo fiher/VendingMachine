@@ -30,13 +30,11 @@ export const addProduct = async (
 };
 
 export const modifyProductQuantity = async (
-  productId: string,
+  code: string,
   quantity: number,
   mode: ModifyProductQuantityMode
 ): Promise<Product> => {
-  const product = (await collections.products.findOne({
-    _id: new ObjectId(productId),
-  })) as Product;
+  const product = await getProductByCode(code);
   let newQuantity =
     mode === ModifyProductQuantityMode.ADD
       ? product.quantity + quantity
@@ -44,7 +42,7 @@ export const modifyProductQuantity = async (
   if (newQuantity < 0) newQuantity = 0;
 
   const result = await collections.products.updateOne(
-    { _id: new ObjectId(productId) },
+    { _id: product._id },
     { $set: { quantity: newQuantity } }
   );
 

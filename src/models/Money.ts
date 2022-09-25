@@ -4,7 +4,7 @@ import Change from "./Change";
 export default interface Money extends WithId<Document> {
   id?: ObjectId;
   change: Change;
-  totalChange: number;
-  buyingChange: Change;
-  buyingTotalChange: number;
+  total: number;
+  insertedChange: Change;
+  insertedTotal: number;
 }

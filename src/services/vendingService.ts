@@ -10,7 +10,7 @@ import {
   changeToArray,
   decreaseChange,
   getMultiplier,
-  increaseChange, sumChange,
+  increaseChange,
 } from "./changeService";
 import Change from "../models/Change";
 import { resetChange } from "./moneyService";
@@ -64,23 +64,23 @@ export const buyProduct = async (productCode: string): Promise<Change> => {
   if (product.quantity < 1) {
     throw new Error("Product is out of stock");
   }
-  const changeToReturn = money.buyingTotalChange - product.price;
+  const changeToReturn = money.insertedTotal - product.price;
   if (changeToReturn < 0) {
     throw new Error(
       `Not enough money. You need extra ${changeToReturn.toFixed(2)}.`
     );
   }
   // To calculate return we take all available currency first
-  const availableChange = increaseChange(money.change, money.buyingChange);
+  const availableChange = increaseChange(money.change, money.insertedChange);
   const returnChange = calculateChange(changeToReturn, availableChange);
   if (!returnChange) {
     throw new Error("Cannot give back change");
   }
   const changeLeft = decreaseChange(availableChange, returnChange);
-  //TODO: Usually there should be some transactional layer to ensure db consistency.
+  //TODO: Usually there should be some logic to ensure db consistency.
   await resetChange(changeLeft);
   await modifyProductQuantity(
-    product._id.toString(),
+    productCode,
     1,
     ModifyProductQuantityMode.SUBTRACT
   );

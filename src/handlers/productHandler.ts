@@ -40,10 +40,10 @@ export const addProductQuantityHandler = async (
   res: Response
 ) => {
   try {
-    const id = req.body.id;
+    const code = req.body.code;
     const quantity = parseInt(req.body.quantity);
     const updatedProduct: Product = await modifyProductQuantity(
-      id,
+      code,
       quantity,
       ModifyProductQuantityMode.ADD
     );
@@ -62,10 +62,10 @@ export const subtractProductQuantityHandler = async (
   res: Response
 ) => {
   try {
-    const id = req.body.id;
+    const code = req.body.code;
     const quantity = parseInt(req.body.quantity);
     const updatedProduct: Product = await modifyProductQuantity(
-      id,
+      code,
       quantity,
       ModifyProductQuantityMode.SUBTRACT
     );
@@ -87,7 +87,7 @@ export const addProductHandler = async (req: Request, res: Response) => {
     result
       ? res
           .status(201)
-          .send(`Successfully added new product, id: ${result.insertedId}`)
+          .send({...product, _id: result.insertedId})
       : res.status(500).send("Failed to add new product");
   } catch (error) {
     console.log(error);

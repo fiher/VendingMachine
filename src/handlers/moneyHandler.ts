@@ -1,9 +1,9 @@
 import Change from "../models/Change";
 import { Request, Response } from "express";
 import {
-  addBuyingChange,
-  emptyBuyingChange,
-  getBuyingChange,
+  emptyInsertedChange,
+  getInsertedChange,
+  insertChange,
   modifyChange,
   MoneyChangeMode,
   resetChange,
@@ -40,9 +40,9 @@ export const removeChangeHandler = async (req: Request, res: Response) => {
   }
 };
 
-export const addBuyingChangeHandler = async (req: Request, res: Response) => {
+export const insertChangeHandler = async (req: Request, res: Response) => {
   try {
-    const updatedMoney: Money = await addBuyingChange(req.body as Change);
+    const updatedMoney: Money = await insertChange(req.body as Change);
 
     updatedMoney
       ? res.status(200).send(updatedMoney)
@@ -53,13 +53,16 @@ export const addBuyingChangeHandler = async (req: Request, res: Response) => {
   }
 };
 
-export const getBuyingChangeHandler = async (req: Request, res: Response) => {
+export const getInsertedChangeHandler = async (req: Request, res: Response) => {
   try {
-    const buyingChange: Change = await getBuyingChange();
+    const insertedChange: Change = await getInsertedChange();
+    if (!insertedChange) {
+      res.status(400).send("Couldn't get inserted change");
+      return;
+    }
+    const insertedTotal = sumChange(insertedChange);
 
-    buyingChange
-      ? res.status(200).send({ buyingChange })
-      : res.status(400).send("Couldn't get buying change");
+    res.status(200).send({ insertedChange, insertedTotal });
   } catch (error) {
     console.log(error);
     res.status(400).send(error.message);
@@ -74,25 +77,27 @@ export const resetChangeHandler = async (req: Request, res: Response) => {
     newMoney
       ? res
           .status(200)
-          .send({ change: newMoney.change, totalChange: newMoney.totalChange })
-      : res.status(400).send("Couldn't get buying change");
+          .send({newMoney})
+      : res.status(400).send("Couldn't get inserted change");
   } catch (error) {
     console.log(error);
     res.status(400).send(error.message);
   }
 };
 
-export const emptyBuyingChangeHandler = async (req: Request, res: Response) => {
+export const emptyInsertedChangeHandler = async (req: Request, res: Response) => {
   try {
-    const buyingChange: Change = await emptyBuyingChange();
-    const totalBuyingChange = sumChange(buyingChange);
+    const insertedChange: Change = await emptyInsertedChange();
+    if (!insertedChange) {
+      res.status(400).send("Couldn't empty change");
+      return;
+    }
+    const insertedTotal = sumChange(insertedChange);
 
-    buyingChange
-      ? res.status(200).send({
-          message: `Successfully withdrawn ${totalBuyingChange}`,
-          change: buyingChange
-        })
-      : res.status(400).send("Couldn't empty change");
+    res.status(200).send({
+          message: `Successfully withdrawn ${insertedTotal}`,
+          change: insertedChange
+        });
   } catch (error) {
     console.log(error);
     res.status(400).send(error.message);

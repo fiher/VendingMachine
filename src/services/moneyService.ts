@@ -22,11 +22,11 @@ export const modifyChange = async (
     mode === MoneyChangeMode.ADD
       ? increaseChange(change, money.change)
       : decreaseChange(money.change, change);
-  const totalChange = sumChange(currentChange);
+  const total = sumChange(currentChange);
   const updatedMoney: Money = {
     ...money,
     change: currentChange,
-    totalChange,
+    total,
   };
   const result = await collections.money.updateOne(
     { _id: money._id },
@@ -40,15 +40,15 @@ export const modifyChange = async (
   }
 };
 
-export const addBuyingChange = async (change: Change) => {
+export const insertChange = async (change: Change) => {
   const money = (await collections.money.findOne()) as Money;
-  const buyingChange = increaseChange(change, money.buyingChange);
-  const buyingTotalChange = sumChange(buyingChange);
+  const insertedChange = increaseChange(change, money.insertedChange);
+  const insertedTotal = sumChange(insertedChange);
   const updatedMoney: Money = {
     ...money,
-    buyingChange,
-    buyingTotalChange,
-  };
+    insertedChange,
+    insertedTotal,
+  } as Money;
 
   const result = await collections.money.updateOne(
     { _id: money._id },
@@ -58,25 +58,25 @@ export const addBuyingChange = async (change: Change) => {
   if (result) {
     return updatedMoney;
   } else {
-    throw new Error("Couldn't update buying change");
+    throw new Error("Couldn't update inserted change");
   }
 };
 
-export const getBuyingChange = async () => {
+export const getInsertedChange = async () => {
   const money = (await collections.money.findOne()) as Money;
 
-  return money.buyingChange;
+  return money.insertedChange;
 };
 
 export const resetChange = async (change: Change) => {
   const money = (await collections.money.findOne()) as Money;
 
-  const totalChange = sumChange(change);
+  const total = sumChange(change);
   const newMoney = {
     change,
-    totalChange,
-    buyingChange: getEmptyChange(),
-    buyingTotalChange: 0,
+    total,
+    insertedChange: getEmptyChange(),
+    insertedTotal: 0,
   } as Money;
 
   if (!money) {
@@ -99,14 +99,14 @@ export const resetChange = async (change: Change) => {
   return newMoney;
 };
 
-export const emptyBuyingChange = async () => {
+export const emptyInsertedChange = async () => {
   const money = (await collections.money.findOne()) as Money;
-  const buyingChange = money.buyingChange;
+  const insertedChange = money.insertedChange;
   const newMoney = {
     ...money,
-    buyingChange: getEmptyChange(),
-    buyingTotalChange: 0,
-  };
+    insertedChange: getEmptyChange(),
+    insertedTotal: 0,
+  } as Money;
 
   const result = await collections.money.updateOne(
     { _id: money._id },
@@ -114,7 +114,7 @@ export const emptyBuyingChange = async () => {
   );
 
   if (result) {
-    return buyingChange; // change to be returned to caller
+    return insertedChange; // change to be returned to caller
   } else {
     throw new Error("Couldn't reset change");
   }

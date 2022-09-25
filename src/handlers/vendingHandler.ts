@@ -10,14 +10,19 @@ export const buyProductHandler = async (req: Request, res: Response) => {
     const code = req.body.code as string;
     const product: Product = await getProductByCode(code);
     const change: Change = await buyProduct(code);
-    const changeTotal = sumChange(change);
-    change
-        ? res.status(200).send({
+
+    if(!change) {
+        res.status(400).send("Couldn't buy product");
+        return;
+    }
+
+    const total = sumChange(change);
+
+    res.status(200).send({
           message: `Successfully bought ${product.name} from ${[product.code]}`,
           change,
-          changeTotal
-        })
-        : res.status(400).send("Couldn't buy product");
+          total
+        });
   } catch (error) {
     console.log(error);
     res.status(400).send(error.message);

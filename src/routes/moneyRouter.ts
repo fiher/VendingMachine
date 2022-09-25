@@ -1,9 +1,9 @@
 import express from "express";
 import {
-  addBuyingChangeHandler,
   addChangeHandler,
-  emptyBuyingChangeHandler,
-  getBuyingChangeHandler,
+  emptyInsertedChangeHandler,
+  getInsertedChangeHandler,
+  insertChangeHandler,
   removeChangeHandler,
   resetChangeHandler,
 } from "../handlers/moneyHandler";
@@ -12,9 +12,9 @@ export const moneyRouter = express.Router();
 
 moneyRouter.use(express.json());
 
-moneyRouter.get("/buyingChange", getBuyingChangeHandler);
+moneyRouter.get("/insertedChange", getInsertedChangeHandler);
 moneyRouter.post("/addChange", addChangeHandler);
 moneyRouter.post("/removeChange", removeChangeHandler);
-moneyRouter.post("/addBuyingChange", addBuyingChangeHandler);
+moneyRouter.post("/insertChange", insertChangeHandler);
 moneyRouter.post("/resetChange", resetChangeHandler);
-moneyRouter.post("/emptyBuyingChange", emptyBuyingChangeHandler);
+moneyRouter.post("/emptyInsertedChange", emptyInsertedChangeHandler);
