@@ -1,0 +1,26 @@
+import { Request, Response } from "express";
+import { buyProduct } from "../services/vendingService";
+import Change from "../models/Change";
+import {getProductByCode} from "../services/productService";
+import Product from "../models/Product";
+import {sumChange} from "../services/changeService";
+
+export const buyProductHandler = async (req: Request, res: Response) => {
+  try {
+    const code = req.body.code as string;
+    const product: Product = await getProductByCode(code);
+    const change: Change = await buyProduct(code);
+    const changeTotal = sumChange(change);
+    change
+        ? res.status(200).send({
+          message: `Successfully bought ${product.name} from ${[product.code]}`,
+          change,
+          changeTotal
+        })
+        : res.status(400).send("Couldn't buy product");
+  } catch (error) {
+    console.log(error);
+    res.status(400).send(error.message);
+  }
+
+};

@@ -1,2 +1,3 @@
 # VendingMachine
- Backend Logic for a Vending Machine
+
+Backend Logic for a Vending Machine
