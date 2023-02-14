@@ -9,9 +9,9 @@
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {
-      "*": ["node_modules/*"]
+      "": ["node_modules/"]
     }
   },
-  "exclude": ["node_modules", "dist", "src/___tests__"],
-  "include": ["src/**/*", "src/__tests__", "jest.config.js"]
+  "exclude": ["node_modules", "dist", "src/_tests"],
+  "include": ["src/*/", "src/tests", "jest.config.js"]
 }

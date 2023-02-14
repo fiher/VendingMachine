@@ -13,6 +13,7 @@
     "build": "tsc",
     "prestart": "npm run build",
     "start": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "test-start": "ts-node src/index.ts",
     "test": "jest",
     "format": "prettier . --write"
   },

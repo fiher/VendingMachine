@@ -1,18 +1,13 @@
-version: 3.8
+version: "3.8"
 services:
   vending-machine:
     container_name: vending-machine
-    image: latest123/vending-machine
     restart: always
     build: .
     ports:
-      - "7500:7500"
-    links:
-      - mongo
+      - "7500:8080"
   mongo:
     container_name: mongo
-    image: mongo
+    image: mongo:latest
     volumes:
       - ./data:/data/db
-    ports:
-     - '27018:27017'
